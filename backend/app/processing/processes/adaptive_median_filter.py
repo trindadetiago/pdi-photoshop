@@ -15,7 +15,6 @@ definition = ProcessDefinition(
     output_type="single_image",
 )
 
-
 def _adaptive_median_channel(channel: np.ndarray, max_size: int) -> np.ndarray:
     """Apply adaptive median filter to a single channel."""
     result = channel.copy()
@@ -60,9 +59,11 @@ def process(image: np.ndarray, max_window_size: int = 7, **kw) -> dict:
     max_window_size = max_window_size if max_window_size % 2 == 1 else max_window_size + 1
 
     if len(image.shape) == 3:
-        channels = cv2.split(image)
-        filtered = [_adaptive_median_channel(ch, max_window_size) for ch in channels]
-        result = cv2.merge(filtered)
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        h, s, v = cv2.split(hsv)
+        v_result = _adaptive_median_channel(v, max_window_size)
+        hsv_result = cv2.merge([h, s, v_result])
+        result = cv2.cvtColor(hsv_result, cv2.COLOR_HSV2BGR)
     else:
         result = _adaptive_median_channel(image, max_window_size)
 

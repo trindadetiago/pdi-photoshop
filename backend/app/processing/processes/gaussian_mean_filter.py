@@ -19,7 +19,15 @@ definition = ProcessDefinition(
 
 @ProcessRegistry.register(definition)
 def process(image: np.ndarray, sigma: float = 1.0, kernel_size: int = 3, **kw) -> dict:
-    # Ensure kernel_size is odd
     kernel_size = kernel_size if kernel_size % 2 == 1 else kernel_size + 1
-    result = cv2.GaussianBlur(image, (kernel_size, kernel_size), sigma)
+
+    if len(image.shape) == 3:
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        h, s, v = cv2.split(hsv)
+        v_result = cv2.GaussianBlur(v, (kernel_size, kernel_size), sigma)
+        hsv_result = cv2.merge([h, s, v_result])
+        result = cv2.cvtColor(hsv_result, cv2.COLOR_HSV2BGR)
+    else:
+        result = cv2.GaussianBlur(image, (kernel_size, kernel_size), sigma)
+
     return {"images": [result], "histograms": None}

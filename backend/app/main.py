@@ -86,7 +86,7 @@ async def process_image(
     logger.info(f"Image: {img.shape} | {'color' if is_color else 'grayscale'}")
 
     # Downscale large images to keep processing responsive
-    MAX_DIM = 1024
+    MAX_DIM = 4096 
     h, w = img.shape[:2]
     if max(h, w) > MAX_DIM:
         scale = MAX_DIM / max(h, w)
