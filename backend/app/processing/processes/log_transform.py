@@ -23,5 +23,5 @@ definition = ProcessDefinition(
 def process(image: np.ndarray, c: float = 1.0, **kw) -> dict:
     img = image.astype(np.float64)
     result = c * np.log1p(img)
-    result = cv2.normalize(result, None, 0, 255, cv2.NORM_MINMAX)
+    result = np.clip(result, 0, 255).astype(np.uint8)
     return {"images": [result.astype(np.uint8)], "histograms": None}

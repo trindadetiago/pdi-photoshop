@@ -17,7 +17,7 @@ definition = ProcessDefinition(
 @ProcessRegistry.register(definition)
 def process(image: np.ndarray, **kw) -> dict:
     if len(image.shape) == 3:
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        raise ValueError("Equalização de histogramas só são suportadas para imagens na escala de cinza.")
     else:
         gray = image
 
